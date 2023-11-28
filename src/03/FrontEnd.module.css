@@ -1,0 +1,35 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+section,
+article {
+    margin: 30px;
+    padding: 10px;
+}
+
+
+div {
+    background-color: white;
+    margin: 30px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.divimg {
+    width: 30%;
+    text-align: center;
+}
+
+article img {
+    border-radius: 50%;
+}
+
+
+footer {
+    background-color: darkblue;
+    color: white;
+    padding: 25px;
+}
