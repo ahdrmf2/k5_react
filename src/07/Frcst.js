@@ -5,6 +5,7 @@ import TailBlueButton from "../UI/TailBlueButton";
 
 export default function Frcst() {
     const [dtTags, setDtTags] = useState();
+    const [dtcnTags, setDtCnTags] = useState();
 
                 //      0               1              2              3
     const dtKey = ["frcstOneDt" , "frcstTwoDt", "frcstThreeDt","frcstFourDt"]
@@ -20,6 +21,7 @@ export default function Frcst() {
 
     const handleClick = (dt) => {
         console.log(dt, dtcn[dt])
+        setDtCnTags(dtcn[dt]);
     }
     useEffect(()=>{
         setDtTags(
@@ -38,7 +40,10 @@ export default function Frcst() {
       <div className="grow flex flex-col justify-center items-center">
         <div className="flex justify-center items-center p-5">
             {dtTags}
-            </div>
+      </div>
+      <div className="flex justify-center items-center p-5">
+        {dtcnTags}
+        </div>
       </div>
     </div>
   )
