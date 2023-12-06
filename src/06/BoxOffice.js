@@ -1,28 +1,48 @@
 import { BiCameraMovie } from "react-icons/bi";
 import TailH1 from "../UI/TailH1";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import TailInputDate from "../UI/TailInputDate";
 
 export default function BoxOffice() {
   const [trs, setTrs] = useState();
   const [boxlist, setBoxlist] = useState();
+  const [yesterday, setYesterDay] = useState();
+  const rfDt = useRef();
 
-  useEffect(() => {
+  const getFetchData = (dt) => {
     //환경 변수값 가져오기
     let apikey = process.env.REACT_APP_BOXOFFICE;
+
     let url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?"
     url = url + `key=${apikey}`
-    url = url + `&targetDt=20231129`;
+    url = url + `&targetDt=${dt}`;
 
     console.log(url);
     fetch(url)
       .then(resp => resp.json())
       .then(data => setBoxlist(data.boxOfficeResult.dailyBoxOfficeList))
       .catch(err => console.log(err))
+  }
 
-    //boxlist 변경시실행
+
+  //날짜 변경시 호출
+  const handleChange = () => {
+    getFetchData(rfDt.current.value.replaceAll('-', ''));
+
+  }
+  //set 바꾸는 세팅.
+  useEffect(() => {
+    let tmYesterday = new Date();
+    tmYesterday.setDate(tmYesterday.getDate() - 1);
+    tmYesterday = tmYesterday.toISOString().slice(0, 10);
+
+    setYesterDay(tmYesterday);
+    console.log(tmYesterday)
+    getFetchData(tmYesterday.replaceAll('-', ''));
   }, []);
 
-  useEffect(() => {  //삼항연산자 이용. ? ㅁ : ㅁ   왼쪽 값을 쓰진 않지만 값이 있어야하기에 빈 값 넣어준다.
+  //boxlist 변경시실행
+  useEffect(() => {  //삼항연산자 이용. ? ㅁ : ㅁ  여기선 왼쪽 값을 쓰진 않지만 값이 있어야하기에 빈 값 넣어준다.
     (boxlist === undefined)
       ? setTrs(
         <tr>
@@ -58,16 +78,22 @@ export default function BoxOffice() {
       );
     //console.log(boxlist);
   }, [boxlist]);
-
   return (
     <div className="container mx-auto h-screen ">
       <div className="flex flex-col justify-center items-center w-full h-full">
         <div className="flex m-8">
           <BiCameraMovie className="text-5xl text-amber-400" />
-
           <span className="text-red-700 font-bold text-4xl">박스오피스</span>
+          <label htmlFor="dt">
+            날짜선택
+          </label>
+          <TailInputDate
+            id="dt"
+            rf={rfDt}
+            max={yesterday}
+            onChange={handleChange}
+          />
         </div>
-
         <div className="relative overflow-x-auto w-3/4 shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-0 dark:text-gray-400">
             <thead className="text-xs text-amber-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -91,9 +117,7 @@ export default function BoxOffice() {
             </tbody>
           </table>
         </div>
-
       </div>
-
     </div>
   )
 }
